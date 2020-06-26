@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.stereotype.Repository;
 
 import dao.Comment;
+import dao.Newcomment;
 import dao.Question;
 import dao.QuestionDao;
 
@@ -94,6 +95,66 @@ public class InterviewProblemService implements QuestionDao {
 		System.out.println(query);
 		return jdbctemplate.update(query);	
 	}
+
+	
+	@Override
+	public int addCommentforNewTable(Newcomment obj) 
+	{
+		String date=new Date().toString();
+		String query="insert into commentnew values ("+"'"+obj.getPagename()+"'"+","+"'"+obj.getSno()+"'"+","+"'"+obj.getEmail()+"'"+","+"'"+obj.getName()+"'"+","+"'"+obj.getComments()+"'"+","+"'"+date+"'"+")";
+		System.out.println(query);
+		return jdbctemplate.update(query);	
+	}
 	
 
+	@Override
+	public List<Newcomment> getListofNewComments(String pagename) 
+	{
+		System.out.println("Trying to get all new comments");
+
+		return jdbctemplate.query("select * from commentnew where pagename="+"'"+pagename+"'"+" ", new ResultSetExtractor<List<Newcomment>>(){
+			@Override
+			public List<Newcomment> extractData(ResultSet rs) throws SQLException,DataAccessException
+			{		
+				List<Newcomment> li=new ArrayList<Newcomment>();
+				 while (rs.next()) 
+				 {
+					 Newcomment q=new Newcomment(rs.getString("pagename"),rs.getInt("sno"),rs.getString("email"),rs.getString("name"),rs.getString("comments"),rs.getString("timestamp"));
+					 li.add(q);
+				 }
+				 return li;
+			}
+		});		
+	}
+	
+	
+
+	@Override
+	public List<Newcomment> getListofCommentsWithTime(String name,String time) {
+		System.out.println("Trying to get all sub comments+"+name+"+"+time);
+//where pagetimestamp="+"'"+time+"'"+" and name="+"'"+name+"'"+" 
+		return jdbctemplate.query("select * from subcomment" , new ResultSetExtractor<List<Newcomment>>(){
+			@Override
+			public List<Newcomment> extractData(ResultSet rs) throws SQLException,DataAccessException
+			{		
+				List<Newcomment> li=new ArrayList<Newcomment>();
+				 while (rs.next())
+				 {
+					 Newcomment q=new Newcomment(rs.getString("pagetimestamp"),rs.getInt("sno"),rs.getString("name"),rs.getString("email"),rs.getString("comments"),rs.getString("timestamp"));
+					 li.add(q);
+				 }
+				 return li;
+			}
+		});				
+	}
+
+	@Override
+	public int addSubCommentforNewTable(Newcomment obj) {
+		String date=new Date().toString();
+		String query="insert into subcomment values ("+"'"+obj.getPagename()+"'"+","+"'"+obj.getSno()+"'"+","+"'"+obj.getName()+"'"+","+"'"+obj.getEmail()+"'"+","+"'"+obj.getComments()+"'"+","+"'"+date+"'"+")";
+		System.out.println(query);
+		return jdbctemplate.update(query);			
+	}
+
+	
 }

@@ -13,6 +13,15 @@ public interface QuestionDao {
 	 List<Comment> getListofComments();
 		
 	 int addComment(Comment obj);
+	 
+	int addCommentforNewTable(Newcomment obj);
+
+	List<Newcomment> getListofCommentsWithTime(String name, String time);
+
+	int addSubCommentforNewTable(Newcomment cmd);
+
+	List<Newcomment> getListofNewComments(String pagename);
+
 
 
 }

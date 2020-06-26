@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import dao.Comment;
+import dao.Newcomment;
 import dao.Question;
 import dao.QuestionDao;
 
@@ -116,6 +117,67 @@ public class InterviewResource {
 			return new ResponseEntity(HttpStatus.NOT_FOUND);
 		}
 		return new ResponseEntity(list,HttpStatus.OK);
+	}
+	
+
+	
+	@PostMapping(path="/Newcommentpost")
+	public ResponseEntity<List<Question>> AddaCommentNewTable(@RequestBody Newcomment cmd)
+	{
+		System.out.println("comment +"+cmd.getComments());
+		int i=interviewproblem.addCommentforNewTable(cmd);
+		System.out.println("i value"+i);
+		List<Newcomment> list=interviewproblem.getListofNewComments(cmd.getPagename());
+		Collections.reverse(list);
+		if (i==0)
+		{
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+		else
+			return new ResponseEntity(list,HttpStatus.OK);
+	}
+	
+	
+	
+	@GetMapping(path="/Newcommentget/{pagename}")
+	public ResponseEntity<List<Newcomment>> getListOfnewComment(@PathVariable String pagename)
+	{
+		List<Newcomment> list=interviewproblem.getListofNewComments(pagename);
+		Collections.reverse(list);
+		if (list == null)
+		{
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity(list,HttpStatus.OK);
+	}
+	
+	@GetMapping(path="/subcomments/{time}/{name}")
+	public ResponseEntity<List<Newcomment>> getListOfSubComments(@PathVariable String time,@PathVariable String name )
+	{
+		List<Newcomment> list=interviewproblem.getListofCommentsWithTime(name,time);
+		Collections.reverse(list);
+		if (list == null)
+		{
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity(list,HttpStatus.OK);
+	}
+	
+	
+	@PostMapping(path="/Newsubcommentpost")
+	public ResponseEntity<List<Newcomment>> AddasubCommenttoNewTable(@RequestBody Newcomment cmd)
+	{
+		System.out.println("comment +"+cmd.getComments());
+		int i=interviewproblem.addSubCommentforNewTable(cmd);
+		System.out.println("i value"+i);
+		List<Newcomment> list=interviewproblem.getListofCommentsWithTime(cmd.getName(), cmd.getTimestamp());
+		Collections.reverse(list);
+		if (i==0)
+		{
+			return new ResponseEntity(HttpStatus.NO_CONTENT);
+		}
+		else
+			return new ResponseEntity(list,HttpStatus.OK);
 	}
 	
 	
