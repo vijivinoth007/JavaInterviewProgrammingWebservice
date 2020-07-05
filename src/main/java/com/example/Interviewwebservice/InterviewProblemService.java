@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.parsing.Problem;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -154,6 +155,33 @@ public class InterviewProblemService implements QuestionDao {
 		String query="insert into subcomment values ("+"'"+obj.getPagename()+"'"+","+"'"+obj.getSno()+"'"+","+"'"+obj.getName()+"'"+","+"'"+obj.getEmail()+"'"+","+"'"+obj.getComments()+"'"+","+"'"+date+"'"+")";
 		System.out.println(query);
 		return jdbctemplate.update(query);			
+	}
+	
+	
+	@Override
+	public List<Question> getListOfProblemsWithID(String key,int id) 
+	{
+		System.out.println("Trying to get a problem"+key);
+
+		return jdbctemplate.query("select * from "+key+" where id="+id+" ", new ResultSetExtractor<List<Question>>(){
+			@Override
+			public List<Question> extractData(ResultSet rs) throws SQLException,DataAccessException
+			{		
+				List<Question> li=new ArrayList<Question>();
+				 while (rs.next())
+				 {
+					 Question q=new Question(rs.getInt("id"), rs.getString("question"), rs.getString("explanation"), rs.getString("answer"),rs.getString("output"));
+					 li.add(q);
+				 }
+				 return li;
+			}
+		});		
+	}
+
+	@Override
+	public List<Newcomment> getListofNewCommentsWithPageNameandID(String pagename, int id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	

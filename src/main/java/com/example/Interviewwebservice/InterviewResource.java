@@ -111,6 +111,7 @@ public class InterviewResource {
 		list.addAll(interviewproblem.getListofPrograms("recursion"));
 		list.addAll(interviewproblem.getListofPrograms("design"));
 		list.addAll(interviewproblem.getListofPrograms("dynamicproblem"));
+
 		
 		if (list == null)
 		{
@@ -180,5 +181,16 @@ public class InterviewResource {
 			return new ResponseEntity(list,HttpStatus.OK);
 	}
 	
+	
+	@GetMapping(path="/problem/{modulename}/{id}")
+	public ResponseEntity<List<Question>> getListOfProblemsWithID(@PathVariable String modulename,@PathVariable int id)
+	{
+		List<Question> list=interviewproblem.getListOfProblemsWithID(modulename,id);
+		if (list == null)
+		{
+			return new ResponseEntity(HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity(list,HttpStatus.OK);
+	}	
 	
 }

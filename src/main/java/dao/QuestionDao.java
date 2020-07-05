@@ -22,6 +22,11 @@ public interface QuestionDao {
 
 	List<Newcomment> getListofNewComments(String pagename);
 
+	List<Newcomment> getListofNewCommentsWithPageNameandID(String pagename, int id);
+
+
+	List<Question> getListOfProblemsWithID(String modulename, int id);
+
 
 
 }
